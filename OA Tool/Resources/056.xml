@@ -1,0 +1,387 @@
+<?xml version="1.0" standalone="yes"?>
+<NewDataSet>
+  <xs:schema id="NewDataSet" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xs:element name="NewDataSet" msdata:IsDataSet="true" msdata:MainDataTable="MyConfig" msdata:UseCurrentLocale="true">
+      <xs:complexType>
+        <xs:choice minOccurs="0" maxOccurs="unbounded">
+          <xs:element name="MyConfig">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="ColName" type="xs:string" minOccurs="0" />
+                <xs:element name="Position" type="xs:string" minOccurs="0" />
+                <xs:element name="Visible" type="xs:boolean" minOccurs="0" />
+                <xs:element name="Width" type="xs:string" minOccurs="0" />
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:choice>
+      </xs:complexType>
+    </xs:element>
+  </xs:schema>
+  <MyConfig>
+    <ColName>Comment</ColName>
+    <Position>1</Position>
+    <Visible>true</Visible>
+    <Width>56</Width>
+  </MyConfig>
+  <MyConfig>
+    <ColName>Status</ColName>
+    <Position>2</Position>
+    <Visible>true</Visible>
+    <Width>209</Width>
+  </MyConfig>
+  <MyConfig>
+    <ColName>Import/Nac</ColName>
+    <Position>3</Position>
+    <Visible>true</Visible>
+    <Width>69</Width>
+  </MyConfig>
+  <MyConfig>
+    <ColName>Record</ColName>
+    <Position>4</Position>
+    <Visible>true</Visible>
+    <Width>67</Width>
+  </MyConfig>
+  <MyConfig>
+    <ColName>Date</ColName>
+    <Position>5</Position>
+    <Visible>true</Visible>
+    <Width>60</Width>
+  </MyConfig>
+  <MyConfig>
+    <ColName>Time</ColName>
+    <Position>6</Position>
+    <Visible>true</Visible>
+    <Width>100</Width>
+  </MyConfig>
+  <MyConfig>
+    <ColName>Cty</ColName>
+    <Position>7</Position>
+    <Visible>true</Visible>
+    <Width>41</Width>
+  </MyConfig>
+  <MyConfig>
+    <ColName>ZFI2 Status</ColName>
+    <Position>8</Position>
+    <Visible>true</Visible>
+    <Width>100</Width>
+  </MyConfig>
+  <MyConfig>
+    <ColName>Vendor</ColName>
+    <Position>9</Position>
+    <Visible>true</Visible>
+    <Width>66</Width>
+  </MyConfig>
+  <MyConfig>
+    <ColName>Vendor name</ColName>
+    <Position>10</Position>
+    <Visible>true</Visible>
+    <Width>100</Width>
+  </MyConfig>
+  <MyConfig>
+    <ColName>Code</ColName>
+    <Position>11</Position>
+    <Visible>true</Visible>
+    <Width>57</Width>
+  </MyConfig>
+  <MyConfig>
+    <ColName>Doc No</ColName>
+    <Position>12</Position>
+    <Visible>true</Visible>
+    <Width>52</Width>
+  </MyConfig>
+  <MyConfig>
+    <ColName>Year</ColName>
+    <Position>13</Position>
+    <Visible>true</Visible>
+    <Width>54</Width>
+  </MyConfig>
+  <MyConfig>
+    <ColName>Doc Ty</ColName>
+    <Position>14</Position>
+    <Visible>true</Visible>
+    <Width>52</Width>
+  </MyConfig>
+  <MyConfig>
+    <ColName>Pst Date</ColName>
+    <Position>15</Position>
+    <Visible>true</Visible>
+    <Width>100</Width>
+  </MyConfig>
+  <MyConfig>
+    <ColName>Clg Date</ColName>
+    <Position>16</Position>
+    <Visible>true</Visible>
+    <Width>100</Width>
+  </MyConfig>
+  <MyConfig>
+    <ColName>Cur</ColName>
+    <Position>17</Position>
+    <Visible>true</Visible>
+    <Width>48</Width>
+  </MyConfig>
+  <MyConfig>
+    <ColName>Amount</ColName>
+    <Position>18</Position>
+    <Visible>true</Visible>
+    <Width>100</Width>
+  </MyConfig>
+  <MyConfig>
+    <ColName>LC</ColName>
+    <Position>19</Position>
+    <Visible>true</Visible>
+    <Width>45</Width>
+  </MyConfig>
+  <MyConfig>
+    <ColName>Amt in LC</ColName>
+    <Position>20</Position>
+    <Visible>true</Visible>
+    <Width>71</Width>
+  </MyConfig>
+  <MyConfig>
+    <ColName>Amt in USD</ColName>
+    <Position>21</Position>
+    <Visible>true</Visible>
+    <Width>80</Width>
+  </MyConfig>
+  <MyConfig>
+    <ColName>Payments Terms</ColName>
+    <Position>22</Position>
+    <Visible>true</Visible>
+    <Width>101</Width>
+  </MyConfig>
+  <MyConfig>
+    <ColName>Baseline Date</ColName>
+    <Position>23</Position>
+    <Visible>true</Visible>
+    <Width>100</Width>
+  </MyConfig>
+  <MyConfig>
+    <ColName>Disc Due Date</ColName>
+    <Position>24</Position>
+    <Visible>true</Visible>
+    <Width>100</Width>
+  </MyConfig>
+  <MyConfig>
+    <ColName>Due Date</ColName>
+    <Position>25</Position>
+    <Visible>true</Visible>
+    <Width>100</Width>
+  </MyConfig>
+  <MyConfig>
+    <ColName>Disc Amt</ColName>
+    <Position>26</Position>
+    <Visible>true</Visible>
+    <Width>100</Width>
+  </MyConfig>
+  <MyConfig>
+    <ColName>Doc Date</ColName>
+    <Position>27</Position>
+    <Visible>true</Visible>
+    <Width>100</Width>
+  </MyConfig>
+  <MyConfig>
+    <ColName>Reference</ColName>
+    <Position>28</Position>
+    <Visible>true</Visible>
+    <Width>100</Width>
+  </MyConfig>
+  <MyConfig>
+    <ColName>Purchase Doc</ColName>
+    <Position>29</Position>
+    <Visible>true</Visible>
+    <Width>100</Width>
+  </MyConfig>
+  <MyConfig>
+    <ColName>Purch Group</ColName>
+    <Position>30</Position>
+    <Visible>true</Visible>
+    <Width>100</Width>
+  </MyConfig>
+  <MyConfig>
+    <ColName>Purchasing Group Name</ColName>
+    <Position>31</Position>
+    <Visible>true</Visible>
+    <Width>100</Width>
+  </MyConfig>
+  <MyConfig>
+    <ColName>Purch Org</ColName>
+    <Position>32</Position>
+    <Visible>true</Visible>
+    <Width>100</Width>
+  </MyConfig>
+  <MyConfig>
+    <ColName>Plant</ColName>
+    <Position>33</Position>
+    <Visible>true</Visible>
+    <Width>100</Width>
+  </MyConfig>
+  <MyConfig>
+    <ColName>BOL Number</ColName>
+    <Position>34</Position>
+    <Visible>true</Visible>
+    <Width>100</Width>
+  </MyConfig>
+  <MyConfig>
+    <ColName>MM Document Number</ColName>
+    <Position>35</Position>
+    <Visible>true</Visible>
+    <Width>100</Width>
+  </MyConfig>
+  <MyConfig>
+    <ColName>N/P</ColName>
+    <Position>36</Position>
+    <Visible>true</Visible>
+    <Width>100</Width>
+  </MyConfig>
+  <MyConfig>
+    <ColName>I/C</ColName>
+    <Position>37</Position>
+    <Visible>true</Visible>
+    <Width>100</Width>
+  </MyConfig>
+  <MyConfig>
+    <ColName>Exp</ColName>
+    <Position>38</Position>
+    <Visible>true</Visible>
+    <Width>100</Width>
+  </MyConfig>
+  <MyConfig>
+    <ColName>mySAP</ColName>
+    <Position>39</Position>
+    <Visible>true</Visible>
+    <Width>100</Width>
+  </MyConfig>
+  <MyConfig>
+    <ColName>MM Scan Index</ColName>
+    <Position>40</Position>
+    <Visible>true</Visible>
+    <Width>100</Width>
+  </MyConfig>
+  <MyConfig>
+    <ColName>Scan text</ColName>
+    <Position>41</Position>
+    <Visible>true</Visible>
+    <Width>100</Width>
+  </MyConfig>
+  <MyConfig>
+    <ColName>Ledger text</ColName>
+    <Position>42</Position>
+    <Visible>true</Visible>
+    <Width>100</Width>
+  </MyConfig>
+  <MyConfig>
+    <ColName>Action Req By</ColName>
+    <Position>43</Position>
+    <Visible>true</Visible>
+    <Width>100</Width>
+  </MyConfig>
+  <MyConfig>
+    <ColName>Reason code</ColName>
+    <Position>44</Position>
+    <Visible>true</Visible>
+    <Width>100</Width>
+  </MyConfig>
+  <MyConfig>
+    <ColName>Reason Description</ColName>
+    <Position>45</Position>
+    <Visible>true</Visible>
+    <Width>100</Width>
+  </MyConfig>
+  <MyConfig>
+    <ColName>Multiple R</ColName>
+    <Position>46</Position>
+    <Visible>true</Visible>
+    <Width>100</Width>
+  </MyConfig>
+  <MyConfig>
+    <ColName>TapDate</ColName>
+    <Position>47</Position>
+    <Visible>true</Visible>
+    <Width>100</Width>
+  </MyConfig>
+  <MyConfig>
+    <ColName>Modified by</ColName>
+    <Position>48</Position>
+    <Visible>true</Visible>
+    <Width>100</Width>
+  </MyConfig>
+  <MyConfig>
+    <ColName>SAP</ColName>
+    <Position>49</Position>
+    <Visible>true</Visible>
+    <Width>100</Width>
+  </MyConfig>
+  <MyConfig>
+    <ColName>Upload Date</ColName>
+    <Position>50</Position>
+    <Visible>true</Visible>
+    <Width>100</Width>
+  </MyConfig>
+  <MyConfig>
+    <ColName>Status Id</ColName>
+    <Position>51</Position>
+    <Visible>true</Visible>
+    <Width>100</Width>
+  </MyConfig>
+  <MyConfig>
+    <ColName>Days On Report</ColName>
+    <Position>52</Position>
+    <Visible>true</Visible>
+    <Width>100</Width>
+  </MyConfig>
+  <MyConfig>
+    <ColName>Days Status upload</ColName>
+    <Position>53</Position>
+    <Visible>true</Visible>
+    <Width>100</Width>
+  </MyConfig>
+  <MyConfig>
+    <ColName>Status Upload</ColName>
+    <Position>54</Position>
+    <Visible>true</Visible>
+    <Width>100</Width>
+  </MyConfig>
+  <MyConfig>
+    <ColName>Record Status</ColName>
+    <Position>55</Position>
+    <Visible>true</Visible>
+    <Width>100</Width>
+  </MyConfig>
+  <MyConfig>
+    <ColName>Record Status Detail</ColName>
+    <Position>56</Position>
+    <Visible>true</Visible>
+    <Width>100</Width>
+  </MyConfig>
+  <MyConfig>
+    <ColName>Last Buyer Comment</ColName>
+    <Position>57</Position>
+    <Visible>true</Visible>
+    <Width>100</Width>
+  </MyConfig>
+  <MyConfig>
+    <ColName>Last Comment User</ColName>
+    <Position>58</Position>
+    <Visible>true</Visible>
+    <Width>100</Width>
+  </MyConfig>
+  <MyConfig>
+    <ColName>Last Comment User Name</ColName>
+    <Position>59</Position>
+    <Visible>true</Visible>
+    <Width>100</Width>
+  </MyConfig>
+  <MyConfig>
+    <ColName>Last Comment Date</ColName>
+    <Position>60</Position>
+    <Visible>true</Visible>
+    <Width>100</Width>
+  </MyConfig>
+  <MyConfig>
+    <ColName>Ck</ColName>
+    <Position>0</Position>
+    <Visible>true</Visible>
+    <Width>26</Width>
+  </MyConfig>
+</NewDataSet>

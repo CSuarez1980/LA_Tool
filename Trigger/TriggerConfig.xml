@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ConfigGrid xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Gica>4</Gica>
+  <Material>5</Material>
+  <Planta>6</Planta>
+  <P_Org>7</P_Org>
+  <P_Grp>8</P_Grp>
+  <AutoPO>0</AutoPO>
+  <S_List>1</S_List>
+  <TaxCode>9</TaxCode>
+  <Acq_Req>2</Acq_Req>
+  <Manu_Name>10</Manu_Name>
+  <Part_Number>11</Part_Number>
+  <Vendor>12</Vendor>
+  <Contrato>13</Contrato>
+  <New_Contrato>3</New_Contrato>
+  <Precio>14</Precio>
+  <PDT>15</PDT>
+  <Currency>16</Currency>
+  <Dias>17</Dias>
+  <Mat_Origin>18</Mat_Origin>
+  <Control_Code>19</Control_Code>
+  <Info_Update>20</Info_Update>
+  <Mat_Group>21</Mat_Group>
+  <ErrorMessage>22</ErrorMessage>
+</ConfigGrid>

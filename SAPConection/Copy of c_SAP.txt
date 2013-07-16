@@ -1,0 +1,656 @@
+Imports System.Data.Common
+Imports System.Data
+Imports System.Configuration
+
+Public Class c_SAP
+    Dim _Connected As Boolean
+    Dim _TNumber As String = ""
+    Dim _Password As String = ""
+    Dim _SAPBox As String = ""
+    Dim _lsDirectory As String = My.Application.Info.DirectoryPath & "\OADownLoad\"
+
+    Private Application
+    Private Connection
+    Private Session
+
+
+    ''' <summary>
+    ''' Directorio donde se descargaran los archivos de SAP
+    ''' </summary>
+    ''' <value></value>
+    ''' <returns></returns>
+    ''' <remarks></remarks>
+    Public Property DownloadDirectory() As String
+        Get
+            Return _lsDirectory
+        End Get
+        Set(ByVal value As String)
+            _lsDirectory = value
+        End Set
+    End Property
+
+    ''' <summary>
+    ''' Determina si existe una conexión con SAP
+    ''' </summary>
+    ''' <value></value>
+    ''' <returns></returns>
+    ''' <remarks></remarks>
+    Public ReadOnly Property Conected() As Boolean
+        Get
+            Return _Connected
+        End Get
+    End Property
+
+    ''' <summary>
+    ''' Setea un valor verdadero si existe conección con SAP
+    ''' </summary>
+    ''' <value></value>
+    ''' <remarks></remarks>
+    Private WriteOnly Property SetConected() As Boolean
+        Set(ByVal value As Boolean)
+            _Connected = value
+        End Set
+    End Property
+
+    ''' <summary>
+    ''' Crea una instacia de SAP
+    ''' </summary>
+    ''' <param name="TNumber">Nombre de usuario. Ej. BM4691</param>
+    ''' <param name="Password">Contraseña para la caja a la que se hará login</param>
+    ''' <param name="SAPBox">Nombre de la caja a la que tendrá acceso Ej: L7P LA TS Prod</param>
+    ''' <remarks></remarks>
+    Public Sub New(ByVal TNumber$, ByVal Password$, ByVal SAPBox$)
+        _TNumber = TNumber
+        _Password = Password
+        _SAPBox = SAPBox
+    End Sub
+
+    ''' <summary>
+    ''' T-Number de usuario
+    ''' </summary>
+    ''' <value></value>
+    ''' <returns></returns>
+    ''' <remarks></remarks>
+    Public Property UserName() As String
+        Get
+            Return _TNumber
+        End Get
+
+        Set(ByVal value As String)
+            _TNumber = value
+        End Set
+    End Property
+
+    ''' <summary>
+    ''' Abre una sesión de SAP
+    ''' </summary>
+    ''' <remarks></remarks>
+    Public Sub OpenConnection()
+        Dim SAPConfig As String = ConfigurationManager.AppSettings.Get("SAP_Configuration")
+
+        Try
+            If Me._Connected Then
+                Exit Sub
+            End If
+
+            If _TNumber.Length = 0 Then
+                Me.SetConected = False
+                MsgBox("No se ha registrado el T-Number de usuario para realizar la conexión.", MsgBoxStyle.Exclamation, "Falta el T-Number de Usuario")
+                Exit Sub
+            End If
+
+            If _Password.Length = 0 Then
+                Me.SetConected = False
+                MsgBox("No se ha registrado la contraseña de usuario para realizar la conexión.", MsgBoxStyle.Exclamation, "Falta la contraseña de Usuario")
+                Exit Sub
+            End If
+
+            If _SAPBox.Length = 0 Then 'por si no se ha ingresado la caja en el objeto
+                Me.SetConected = False
+                MsgBox("No se ha registrado la caja de SAP para realizar la conexion.", MsgBoxStyle.Exclamation, "Falta la contraseña de Usuario")
+                Exit Sub
+            End If
+
+            Application = CreateObject("Sapgui.ScriptingCtrl.1")
+
+
+            '**************************************************
+            If SAPConfig = "Standard" Then
+                Connection = Application.OpenConnection(_SAPBox)
+                Session = Connection.Children(0)
+
+                Session.findbyId("wnd[0]/usr/txtRSYST-BNAME").Text = _TNumber
+                Session.findbyId("wnd[0]/usr/pwdRSYST-BCODE").Text = _Password
+
+                Session.findbyId("wnd[0]").sendVKey(0)
+
+                If Session.findById("wnd[0]/sbar").Text <> "" Then
+                    MsgBox("No se puede realizar la conexion con SAP." & vbCr & vbCr & "Por favor verifique el nombre de usuario y la contraseña y vuelva a intentarlo.", MsgBoxStyle.Critical)
+                    Me.SetConected = False
+                    Session.findbyId("wnd[0]/tbar[0]/btn[15]").press()
+                    Exit Sub
+                End If
+            Else
+                Connection = Application.OpenConnection(_SAPBox & " - SSO")
+                Session = Connection.Children(0)
+            End If
+            '**************************************************
+            'Connection = Application.OpenConnection(_SAPBox)
+            'Session = Connection.Children(0)
+
+            'Session.findbyId("wnd[0]/usr/txtRSYST-BNAME").Text = _TNumber
+            'Session.findbyId("wnd[0]/usr/pwdRSYST-BCODE").Text = _Password
+
+            'Session.findbyId("wnd[0]").sendVKey(0)
+
+            'If Session.findById("wnd[0]/sbar").Text <> "" Then
+            '    MsgBox("No se puede realizar la conexion con SAP." & vbCr & vbCr & "Por favor verifique el nombre de usuario y la contraseña y vuelva a intentarlo.", MsgBoxStyle.Critical)
+            '    Me.SetConected = False
+            '    Session.findbyId("wnd[0]/tbar[0]/btn[15]").press()
+            '    Exit Sub
+            'End If
+
+
+            If Not Session.findbyId("wnd[1]/usr/radMULTI_LOGON_OPT2", False) Is Nothing Then
+                Session.findbyId("wnd[1]/usr/radMULTI_LOGON_OPT2").SetFocus()
+                Session.findbyId("wnd[1]/usr/radMULTI_LOGON_OPT2").Selected = True
+                Session.findbyId("wnd[1]/tbar[0]/btn[0]").press()
+            End If
+
+            Me.SetConected = True
+
+        Catch ex As Exception
+            MsgBox("Can't get SAP Connection.", MsgBoxStyle.Critical)
+            Me.SetConected = False
+        Finally
+        End Try
+    End Sub
+
+    ''' <summary>
+    ''' Password para ingresar a la caja de SAP
+    ''' </summary>
+    ''' <value></value>
+    ''' <returns></returns>
+    ''' <remarks></remarks>
+    Public Property Password() As String
+        Get
+            Return _Password
+        End Get
+
+        Set(ByVal value As String)
+            _Password = value
+        End Set
+    End Property
+
+    ''' <summary>
+    ''' Cierra la sesión de SAP
+    ''' </summary>
+    ''' <remarks></remarks>
+    Public Sub CloseConnection()
+        If _Connected Then
+            Session.findbyId("wnd[0]").Close()
+            Session.findbyId("wnd[1]/usr/btnSPOP-OPTION1").press()
+            Me.SetConected = False
+        End If
+    End Sub
+
+    ''' <summary>
+    ''' Envia las instrucciones para guardar un archivo a ser descargado de SAP 
+    ''' </summary>
+    ''' <param name="FileName">Nombre del archivo</param>
+    ''' <param name="FilePath">Ruta donde se va a descargar el archivo</param>
+    ''' <remarks></remarks>
+    Private Function SaveSAPFile(ByVal FileName$, Optional ByVal FilePath$ = "") As Boolean
+
+        If FileName.Length = 0 Then
+            MsgBox("Debe ingresar el nombre de archivo para guardarlo.", MsgBoxStyle.Information)
+            Return False
+        End If
+
+        If FilePath.Length = 0 Then
+            FilePath = _lsDirectory
+        End If
+
+        If Session.findById("wnd[0]/sbar").Text <> "" Then
+            Return False
+        End If
+
+        Session.findById("wnd[0]/tbar[0]/okcd").text = "%pc"
+        Session.findById("wnd[0]").sendVKey(0)
+        Session.findById("wnd[1]/usr/sub:SAPLSPO5:0201/radSPOPLI-SELFLAG[0,0]").select()
+        Session.findById("wnd[1]/tbar[0]/btn[0]").press()
+
+        Session.findById("wnd[1]/usr/ctxtDY_PATH").text = FilePath
+        Session.findById("wnd[1]/usr/ctxtDY_FILENAME").text = FileName
+
+        If My.Computer.FileSystem.FileExists(_lsDirectory & FileName) Then
+            Kill(_lsDirectory & FileName)
+        End If
+
+        Session.findById("wnd[1]/usr/ctxtDY_FILENAME").caretPosition = 19
+        Session.findById("wnd[1]/tbar[0]/btn[0]").press()
+
+        Return True
+    End Function
+    '''' <summary>
+    '''' Descarga las ordenes de compra para catalogos y free form text
+    '''' </summary>
+    '''' <remarks></remarks>
+    '''' <parameters></parameters>
+    'Public Function DownloadUtilities(ByVal FechaInicio$, ByVal FechaFinal$) As Boolean
+    '    If Me._Connected Then
+    '        Session.findById("wnd[0]").resizeWorkingPane(128, 27, False)
+    '        Session.findById("wnd[0]/tbar[0]/okcd").text = "/nzse16"
+    '        Session.findById("wnd[0]").sendVKey(0)
+    '        Session.findById("wnd[0]/usr/ctxtI_TABLE").text = "ekko"
+    '        Session.findById("wnd[0]/usr/ctxtI_TABLE").caretPosition = 4
+    '        Session.findById("wnd[0]").sendVKey(8)
+
+    '        If Not Session.findById("wnd[1]/tbar[0]/btn[0]", False) Is Nothing Then
+    '            Session.findById("wnd[1]/tbar[0]/btn[0]").SetFocus()
+    '            Session.findById("wnd[1]/tbar[0]/btn[0]").press()
+    '        End If
+
+    '        Session.findById("wnd[0]/mbar/menu[3]/menu[2]").select()
+    '        Session.findById("wnd[1]/tbar[0]/btn[14]").press()
+    '        Session.findById("wnd[1]/usr/chk[2,8]").selected = True
+    '        Session.findById("wnd[1]/usr/chk[2,10]").selected = True
+    '        Session.findById("wnd[1]/usr/chk[2,12]").selected = True
+    '        Session.findById("wnd[1]/usr/chk[2,12]").setFocus()
+    '        Session.findById("wnd[1]/tbar[0]/btn[71]").press()
+    '        Session.findById("wnd[2]/usr/chkSCAN_STRING-START").selected = False
+    '        Session.findById("wnd[2]/usr/txtRSYSF-STRING").text = "org"
+    '        Session.findById("wnd[2]/usr/chkSCAN_STRING-START").setFocus()
+    '        Session.findById("wnd[2]/tbar[0]/btn[0]").press()
+    '        Session.findById("wnd[3]/usr/lbl[6,2]").setFocus()
+    '        Session.findById("wnd[3]/usr/lbl[6,2]").caretPosition = 1
+    '        Session.findById("wnd[3]").sendVKey(2)
+    '        Session.findById("wnd[1]/usr/chk[2,0]").selected = True
+    '        Session.findById("wnd[1]/usr/chk[2,0]").setFocus()
+    '        Session.findById("wnd[1]/tbar[0]/btn[0]").press()
+
+    '        Session.findById("wnd[0]/usr/ctxtI1-LOW").text = "EC"
+    '        Session.findById("wnd[0]/usr/ctxtI1-LOW").caretPosition = 2
+    '        Session.findById("wnd[0]/usr/btn%_I2_%_APP_%-VALU_PUSH").press()
+    '        Session.findById("wnd[1]/usr/tabsTAB_STRIP/tabpSIVA/ssubSCREEN_HEADER:SAPLALDB:3010/tblSAPLALDBSINGLE/btnRSCSEL-SOP_I[0,0]").setFocus()
+    '        Session.findById("wnd[1]/usr/tabsTAB_STRIP/tabpSIVA/ssubSCREEN_HEADER:SAPLALDB:3010/tblSAPLALDBSINGLE/btnRSCSEL-SOP_I[0,0]").press()
+    '        Session.findById("wnd[2]/tbar[0]/btn[0]").press()
+    '        Session.findById("wnd[1]/tbar[0]/btn[8]").press()
+
+    '        Session.findById("wnd[0]/usr/ctxtI3-LOW").text = FechaInicio
+    '        Session.findById("wnd[0]/usr/ctxtI3-HIGH").text = FechaFinal
+
+    '        Session.findById("wnd[0]/usr/ctxtI4-LOW").setFocus()
+    '        Session.findById("wnd[0]/usr/ctxtI4-LOW").caretPosition = 0
+    '        Session.findById("wnd[0]/usr/btn%_I4_%_APP_%-VALU_PUSH").press()
+
+    '        If Trim(Session.findById("wnd[0]/sbar").Text) <> "" Then
+    '            MsgBox(Session.findById("wnd[0]/sbar").Text, MsgBoxStyle.Critical)
+    '        End If
+
+    '        Session.findById("wnd[1]/usr/tabsTAB_STRIP/tabpSIVA/ssubSCREEN_HEADER:SAPLALDB:3010/tblSAPLALDBSINGLE/ctxtRSCSEL-SLOW_I[1,0]").text = "1377"
+    '        Session.findById("wnd[1]/usr/tabsTAB_STRIP/tabpSIVA/ssubSCREEN_HEADER:SAPLALDB:3010/tblSAPLALDBSINGLE/ctxtRSCSEL-SLOW_I[1,1]").text = "1378"
+    '        'Session.findById("wnd[1]/usr/tabsTAB_STRIP/tabpSIVA/ssubSCREEN_HEADER:SAPLALDB:3010/tblSAPLALDBSINGLE/ctxtRSCSEL-SLOW_I[1,2]").text = "1376"
+    '        Session.findById("wnd[1]/usr/tabsTAB_STRIP/tabpSIVA/ssubSCREEN_HEADER:SAPLALDB:3010/tblSAPLALDBSINGLE/ctxtRSCSEL-SLOW_I[1,3]").text = "1379"
+    '        Session.findById("wnd[1]/usr/tabsTAB_STRIP/tabpSIVA/ssubSCREEN_HEADER:SAPLALDB:3010/tblSAPLALDBSINGLE/ctxtRSCSEL-SLOW_I[1,4]").text = "1369"
+    '        Session.findById("wnd[1]/usr/tabsTAB_STRIP/tabpSIVA/ssubSCREEN_HEADER:SAPLALDB:3010/tblSAPLALDBSINGLE/ctxtRSCSEL-SLOW_I[1,4]").setFocus()
+    '        Session.findById("wnd[1]/usr/tabsTAB_STRIP/tabpSIVA/ssubSCREEN_HEADER:SAPLALDB:3010/tblSAPLALDBSINGLE/ctxtRSCSEL-SLOW_I[1,4]").caretPosition = 4
+
+    '        Session.findById("wnd[1]/tbar[0]/btn[8]").press()
+    '        Session.findById("wnd[0]/usr/ctxtLIST_BRE").text = "9999"
+    '        Session.findById("wnd[0]/usr/txtMAX_SEL").text = "999999999"
+    '        Session.findById("wnd[0]/usr/txtMAX_SEL").setFocus()
+    '        Session.findById("wnd[0]/usr/txtMAX_SEL").caretPosition = 11
+    '        Session.findById("wnd[0]/mbar/menu[3]/menu[0]/menu[1]").select()
+    '        Session.findById("wnd[1]/tbar[0]/btn[14]").press()
+    '        Session.findById("wnd[1]/usr/chk[1,3]").selected = True
+    '        Session.findById("wnd[1]/usr/chk[1,4]").selected = True
+    '        Session.findById("wnd[1]/usr/chk[1,11]").selected = True
+    '        Session.findById("wnd[1]/usr/chk[1,12]").selected = True
+    '        Session.findById("wnd[1]/usr/chk[1,15]").selected = True
+    '        Session.findById("wnd[1]/usr/chk[1,15]").setFocus()
+    '        Session.findById("wnd[1]/tbar[0]/btn[71]").press()
+    '        Session.findById("wnd[2]/usr/chkSCAN_STRING-START").selected = False
+    '        Session.findById("wnd[2]/usr/txtRSYSF-STRING").text = "org"
+    '        Session.findById("wnd[2]/usr/txtRSYSF-STRING").caretPosition = 3
+    '        Session.findById("wnd[2]/tbar[0]/btn[0]").press()
+    '        Session.findById("wnd[3]/usr/lbl[5,2]").setFocus()
+    '        Session.findById("wnd[3]/usr/lbl[5,2]").caretPosition = 1
+    '        Session.findById("wnd[3]").sendVKey(2)
+    '        Session.findById("wnd[1]/usr/chk[1,3]").selected = True
+    '        Session.findById("wnd[1]/usr/chk[1,3]").setFocus()
+    '        Session.findById("wnd[1]/tbar[0]/btn[6]").press()
+    '        Session.findById("wnd[0]/tbar[1]/btn[8]").press()
+
+    '        'Session.findById("wnd[0]/tbar[0]/okcd").text = "%pc"
+    '        'Session.findById("wnd[0]").sendVKey(0)
+    '        'Session.findById("wnd[1]/usr/sub:SAPLSPO5:0201/radSPOPLI-SELFLAG[0,0]").select()
+    '        'Session.findById("wnd[1]/tbar[0]/btn[0]").press()
+    '        'Session.findById("wnd[1]/usr/ctxtDY_PATH").text = _lsDirectory
+    '        'Session.findById("wnd[1]/usr/ctxtDY_FILENAME").text = "HeaderUtilities.txt"
+
+    '        'If Len(Dir(_lsDirectory & "HeaderUtilities.txt")) > 0 Then
+    '        '    Kill(_lsDirectory & "HeaderUtilities.txt")
+    '        'End If
+
+    '        'Session.findById("wnd[1]/usr/ctxtDY_FILENAME").caretPosition = 19
+    '        'Session.findById("wnd[1]/tbar[0]/btn[0]").press()
+
+    '        Return Me.SaveSAPFile("HeaderUtilities.txt")
+
+    '    End If
+    'End Function
+
+
+    ''' <summary>
+    ''' Descarga la informacion de los source list de los contratos
+    ''' </summary>
+    ''' <returns></returns>
+    ''' <remarks></remarks>
+    Public Function DownloadSourceList() As Boolean
+
+        If Not _Connected Then
+            Return False
+        End If
+
+        Session.findById("wnd[0]").maximize()
+        Session.findById("wnd[0]/tbar[0]/okcd").text = "/nzse16"
+        Session.findById("wnd[0]").sendVKey(0)
+        Session.findById("wnd[0]/usr/ctxtI_TABLE").text = "eord"
+        Session.findById("wnd[0]/usr/ctxtI_TABLE").caretPosition = 4
+        Session.findById("wnd[0]").sendVKey(8)
+
+        If Not Session.findById("wnd[1]/tbar[0]/btn[0]", False) Is Nothing Then
+            Session.findById("wnd[1]/tbar[0]/btn[0]").SetFocus()
+            Session.findById("wnd[1]/tbar[0]/btn[0]").press()
+        End If
+
+        Session.findById("wnd[0]/mbar/menu[3]/menu[0]/menu[1]").select()
+        Session.findById("wnd[1]/tbar[0]/btn[14]").press()
+        Session.findById("wnd[1]/usr/chk[1,3]").selected = True
+        Session.findById("wnd[1]/usr/chk[1,4]").selected = True
+        Session.findById("wnd[1]/usr/chk[1,5]").selected = True
+        Session.findById("wnd[1]/usr/chk[1,9]").selected = True
+        Session.findById("wnd[1]/usr/chk[1,10]").selected = True
+        Session.findById("wnd[1]/usr/chk[1,10]").setFocus()
+        Session.findById("wnd[1]/tbar[0]/btn[6]").press()
+        Session.findById("wnd[0]/usr/ctxtI1-LOW").text = "30000000"
+        Session.findById("wnd[0]/usr/ctxtI1-HIGH").text = "39999999"
+        Session.findById("wnd[0]/usr/ctxtI1-HIGH").setFocus()
+        Session.findById("wnd[0]/usr/ctxtI1-HIGH").caretPosition = 8
+        Session.findById("wnd[0]/tbar[1]/btn[8]").press()
+
+        ''''''''''''''''''''''''''''''''''''''''''''''''''''''
+        If Not Me.SaveSAPFile("SourceList.txt") Then
+            MsgBox("Error al guardar el archivo.", MsgBoxStyle.Critical)
+            Return False
+        Else
+            Return True
+        End If
+        ''''''''''''''''''''''''''''''''''''''''''''''''''''''
+    End Function
+    Public Function DownloadTrigger(ByVal Plantas As DataTable) As Boolean
+        If Not _Connected Then
+            Return False
+        End If
+
+        If Plantas.Rows.Count > 0 Then
+            Session.findById("wnd[0]").maximize()
+            Session.findById("wnd[0]/tbar[0]/okcd").text = "/nzse16"
+            Session.findById("wnd[0]").sendVKey(0)
+            Session.findById("wnd[0]/usr/ctxtI_TABLE").text = "ZMXXMRC1"
+            Session.findById("wnd[0]").sendVKey(8)
+            Session.findById("wnd[0]/mbar/menu[3]/menu[2]").select()
+            Session.findById("wnd[1]/tbar[0]/btn[14]").press()
+            Session.findById("wnd[1]/usr/chk[2,5]").selected = True
+            Session.findById("wnd[1]/usr/chk[2,6]").selected = True
+            Session.findById("wnd[1]/usr/chk[2,6]").setFocus()
+            Session.findById("wnd[1]/tbar[0]/btn[71]").press()
+            Session.findById("wnd[2]/usr/chkSCAN_STRING-START").selected = False
+            Session.findById("wnd[2]/usr/txtRSYSF-STRING").text = "step"
+            Session.findById("wnd[2]/usr/chkSCAN_STRING-START").setFocus()
+            Session.findById("wnd[2]/tbar[0]/btn[0]").press()
+            Session.findById("wnd[3]/usr/lbl[5,2]").setFocus()
+            Session.findById("wnd[3]").sendVKey(2)
+            Session.findById("wnd[1]/usr/chk[2,0]").selected = True
+            Session.findById("wnd[1]/usr/chk[2,0]").setFocus()
+            Session.findById("wnd[1]/tbar[0]/btn[0]").press()
+            Session.findById("wnd[0]/usr/ctxtI1-LOW").text = "30000000"
+            Session.findById("wnd[0]/usr/ctxtI1-HIGH").text = "39999999"
+            Session.findById("wnd[0]/usr/ctxtI2-LOW").setFocus()
+            Session.findById("wnd[0]/usr/ctxtI2-LOW").caretPosition = 0
+            Session.findById("wnd[0]/usr/btn%_I2_%_APP_%-VALU_PUSH").press()
+
+            Session.findById("wnd[1]/usr/tabsTAB_STRIP/tabpSIVA/ssubSCREEN_HEADER:SAPLALDB:3010/tblSAPLALDBSINGLE/ctxtRSCSEL-SLOW_I[1,0]").text = Plantas.Rows(0).Item("code")
+
+            Dim I As Integer
+            For I = 1 To Plantas.Rows.Count - 1
+                Session.findById("wnd[1]/usr/tabsTAB_STRIP/tabpSIVA/ssubSCREEN_HEADER:SAPLALDB:3010/tblSAPLALDBSINGLE/ctxtRSCSEL-SLOW_I[1,1]").text = Plantas.Rows(I).Item("code")
+                Session.findById("wnd[1]/usr/tabsTAB_STRIP/tabpSIVA/ssubSCREEN_HEADER:SAPLALDB:3010/tblSAPLALDBSINGLE").verticalScrollbar.position = I
+            Next
+            Session.findById("wnd[1]/tbar[0]/btn[8]").press()
+
+            'Choose fields
+            Session.findById("wnd[0]/mbar/menu[3]/menu[0]/menu[1]").select()
+            Session.findById("wnd[1]/tbar[0]/btn[14]").press()
+            Session.findById("wnd[1]/usr/chk[1,4]").selected = True
+            Session.findById("wnd[1]/usr/chk[1,5]").selected = True
+            Session.findById("wnd[1]/usr/chk[1,10]").selected = True
+            Session.findById("wnd[1]/usr/chk[1,11]").selected = True
+            Session.findById("wnd[1]/usr/chk[1,12]").selected = True
+            Session.findById("wnd[1]/usr/chk[1,13]").selected = True
+            Session.findById("wnd[1]/usr/chk[1,14]").selected = True
+            Session.findById("wnd[1]/usr/chk[1,14]").setFocus()
+            Session.findById("wnd[1]/tbar[0]/btn[71]").press()
+            Session.findById("wnd[2]/usr/chkSCAN_STRING-START").selected = False
+            Session.findById("wnd[2]/usr/txtRSYSF-STRING").text = "manu"
+            Session.findById("wnd[2]/usr/txtRSYSF-STRING").caretPosition = 4
+            Session.findById("wnd[2]/tbar[0]/btn[0]").press()
+            Session.findById("wnd[3]/usr/lbl[3,2]").setFocus()
+            Session.findById("wnd[3]/usr/lbl[3,2]").caretPosition = 2
+            Session.findById("wnd[3]").sendVKey(2)
+            Session.findById("wnd[1]/usr/chk[1,3]").selected = True
+            Session.findById("wnd[1]/usr/chk[1,4]").selected = True
+            Session.findById("wnd[1]/usr/chk[1,5]").selected = True
+            Session.findById("wnd[1]/usr/chk[1,5]").setFocus()
+            Session.findById("wnd[1]/tbar[0]/btn[6]").press()
+
+            Session.findById("wnd[0]/usr/txtI3-LOW").text = "2"
+            Session.findById("wnd[0]/usr/ctxtLIST_BRE").text = "9999"
+            Session.findById("wnd[0]/usr/txtMAX_SEL").text = "999999999"
+            Session.findById("wnd[0]/tbar[1]/btn[8]").press()
+
+            If Not Me.SaveSAPFile("Trigger.txt") Then
+                MsgBox("Error al guardar el archivo.", MsgBoxStyle.Critical)
+                Return False
+            Else
+                Return True
+            End If
+
+        Else
+            MsgBox("No se pasaron por parámetro las plantas.", MsgBoxStyle.Critical)
+            Return False
+        End If
+
+
+    End Function
+    Public Function PrepararTriggerForm() As Boolean
+        If _Connected Then
+            Session.findById("wnd[0]").maximize()
+            Session.findById("wnd[0]/tbar[0]/okcd").text = "/nztdb"
+            Session.findById("wnd[0]").sendVKey(0)
+
+            Session.findById("wnd[0]/usr/chkP_STEP1").selected = False
+            Session.findById("wnd[0]/usr/chkP_STEP3").selected = False
+            Session.findById("wnd[0]/usr/ctxtS_WERKS-LOW").text = "2930"
+            Session.findById("wnd[0]/usr/chkP_STEP3").setFocus()
+            Session.findById("wnd[0]/tbar[1]/btn[8]").press()
+            If Trim(Session.findById("wnd[0]/sbar").Text) <> "" Then
+                Return False
+            Else
+                Return True
+            End If
+        End If
+    End Function
+
+    ''' <summary>
+    ''' Actualiza los valores del material en la master data
+    ''' </summary>
+    ''' <param name="Material">Objeto Material</param>
+    ''' <returns></returns>
+    ''' <remarks></remarks>
+    Public Function UploadValuesOnTrigger(ByRef Material As Object, ByVal lsUser As String) As Boolean
+        'Sube los valores de los materiales a Trigger
+        Dim i As Integer = 0
+        Dim Gica As Double
+        Dim Planta$
+
+        'Busca el material en la pantalla de Trigger
+        Do While True
+
+            If Not Double.TryParse(Session.findById("wnd[0]/usr/tblSAPMZMXXTDBTC_0100/ctxtZMXXMRC1-MATNR[5," & i & "]").text, Gica) Then
+                Return False
+            End If
+
+            Planta = Session.findById("wnd[0]/usr/tblSAPMZMXXTDBTC_0100/ctxtZMXXMRC1-WERKS[4," & i & "]").text
+            If ((Material.Gica = Gica) And (Material.Planta = Planta)) Then
+                Exit Do
+            End If
+
+            'Verifica si no se encontró en matrial
+            If Planta.Trim.Length = 0 Then
+                MsgBox("No se encontrado el material en SAP. Por favor verifique si material: " & Material.Gica & " " & Material.Material, MsgBoxStyle.Critical)
+                Return False
+            End If
+            i = i + 1
+        Loop
+
+        'Colocación de los nuevos datos en la pantalla de Trigger
+        Session.findById("wnd[0]/usr/tblSAPMZMXXTDBTC_0100/ctxtZMXXMRC1-MWSKZ[32," & i & "]").text = Material.TaxCode
+        Session.findById("wnd[0]").sendVKey(0)
+        If Trim(Session.findById("wnd[0]/sbar").Text) <> "" Then
+            Material.ErrorMessage = Trim(Session.findById("wnd[0]/sbar").Text)
+            Session.findById("wnd[0]/usr/tblSAPMZMXXTDBTC_0100/ctxtZMXXMRC1-MWSKZ[32," & i & "]").text = ""
+            Session.findById("wnd[0]").sendVKey(0)
+            Return False
+        End If
+
+        Session.findById("wnd[0]/usr/tblSAPMZMXXTDBTC_0100/ctxtZMXXMRC1-EVRTN[37," & i & "]").text = Material.Contrato
+        Session.findById("wnd[0]/usr/tblSAPMZMXXTDBTC_0100/ctxtZMXXMRC1-LIFNR[35," & i & "]").text = Material.Vendor
+        Session.findById("wnd[0]/usr/tblSAPMZMXXTDBTC_0100/txtZMXXMRC1-NETPR[40," & i & "]").text = Material.Precio
+        Session.findById("wnd[0]/usr/tblSAPMZMXXTDBTC_0100/txtZMXXMRC1-PLIFZ[44," & i & "]").text = Material.PDT
+        Session.findById("wnd[0]/usr/tblSAPMZMXXTDBTC_0100/ctxtZMXXMRC1-ZPCONTACT[28," & i & "]").text = lsUser
+
+        If Material.New_Contrato Then
+            Session.findById("wnd[0]/usr/tblSAPMZMXXTDBTC_0100/chkZMXXMRC1-ZNWCONTR[36," & i & "]").selected = True
+        End If
+
+        If Material.AutoPO Then
+            Session.findById("wnd[0]/usr/tblSAPMZMXXTDBTC_0100/chkZMXXMRC1-KAUTB[33," & i & "]").selected = True
+        End If
+
+        If Material.S_List Then
+            Session.findById("wnd[0]/usr/tblSAPMZMXXTDBTC_0100/chkZMXXMRC1-KORDB[34," & i & "]").selected = True
+        End If
+
+        Session.findById("wnd[0]").sendVKey(0)
+
+        If Trim(Session.findById("wnd[0]/sbar").Text) <> "" Then
+            Return False
+        Else
+            Return True
+        End If
+    End Function
+
+
+    ''' <summary>
+    ''' Cambia la validez de un contrato
+    ''' </summary>
+    ''' <param name="Contrato">Número del contrato al que se le modificará la validez</param>
+    ''' <param name="Inicio">Nueva fecha de inicio del contrato</param>
+    ''' <param name="Fin">Nueva fecha final de la validez del contrato</param>
+    ''' <returns></returns>
+    ''' <remarks></remarks>
+    Public Function FixValidityOfOA(ByVal Contrato$, ByVal Inicio$, ByVal Fin$) As Boolean
+        If _Connected Then
+            Session.findById("wnd[0]").maximize()
+            Session.findById("wnd[0]/tbar[0]/okcd").text = "/nme32k"
+            Session.findById("wnd[0]").sendVKey(0)
+            Session.findById("wnd[0]/usr/ctxtRM06E-EVRTN").text = Contrato
+            Session.findById("wnd[0]/usr/ctxtRM06E-EVRTN").caretPosition = 10
+            Session.findById("wnd[0]").sendVKey(0)
+            Session.findById("wnd[0]/tbar[1]/btn[6]").press()
+            Session.findById("wnd[0]/usr/ctxtEKKO-KDATB").text = Inicio
+            Session.findById("wnd[0]/usr/ctxtEKKO-KDATE").text = Fin
+            Session.findById("wnd[0]").sendVKey(0)
+            Session.findById("wnd[0]").sendVKey(0)
+            Session.findById("wnd[0]/tbar[0]/btn[11]").press()
+
+            If Not Session.findById("wnd[1]/usr/btnSPOP-OPTION1", False) Is Nothing Then
+                Session.findById("wnd[1]/usr/btnSPOP-OPTION1").SetFocus()
+                Session.findById("wnd[1]/usr/btnSPOP-OPTION1").press()
+            End If
+            FixValidityOfOA = True
+        Else
+            FixValidityOfOA = False
+        End If
+    End Function
+
+    ''' <summary>
+    ''' Crea el Source List del contrato material por material
+    ''' </summary>
+    ''' <param name="Gica">Número de Gica</param>
+    ''' <param name="Planta">Código de Planta</param>
+    ''' <param name="Inicio">Fecha de Incio para el source list[Debe ser igual al del contrato</param>
+    ''' <param name="Fin">Fecha de Final para el source list[Debe ser igual al del contrato</param>
+    ''' <param name="Vendor">Código del proveedor</param>
+    ''' <param name="PurchOrg">Purchasing group del contrato</param>
+    ''' <param name="OA">Número del contrato</param>
+    ''' <param name="Item">Line Item del contrato</param>
+    ''' <returns></returns>
+    ''' <remarks></remarks>
+    Public Function FixSourceListOA(ByVal Gica As Double, ByVal Planta$, ByVal Inicio As Date, ByVal Fin As Date, ByVal Vendor As Double, ByVal PurchOrg As String, ByVal OA As Double, ByVal Item As Integer) As Boolean
+
+        If _Connected Then
+            Session.findById("wnd[0]").resizeWorkingPane(119, 28, False)
+            Session.findById("wnd[0]/tbar[0]/okcd").text = "/nme01"
+            Session.findById("wnd[0]").sendVKey(0)
+            Session.findById("wnd[0]/usr/ctxtEORD-MATNR").text = Gica
+            Session.findById("wnd[0]/usr/ctxtEORD-WERKS").text = Planta
+            Session.findById("wnd[0]/usr/ctxtEORD-WERKS").setFocus()
+            Session.findById("wnd[0]/usr/ctxtEORD-WERKS").caretPosition = 0
+            Session.findById("wnd[0]").sendVKey(0)
+
+            If Trim(Session.findById("wnd[0]/sbar").Text) <> "" Then
+                Return False
+            End If
+
+            Session.findById("wnd[0]/usr/tblSAPLMEORTC_0205/ctxtEORD-VDATU[0,0]").text = Inicio
+            Session.findById("wnd[0]/usr/tblSAPLMEORTC_0205/ctxtEORD-BDATU[1,0]").text = Fin
+            Session.findById("wnd[0]/usr/tblSAPLMEORTC_0205/ctxtEORD-LIFNR[2,0]").text = Vendor
+            Session.findById("wnd[0]/usr/tblSAPLMEORTC_0205/ctxtEORD-EKORG[3,0]").text = PurchOrg
+            Session.findById("wnd[0]/usr/tblSAPLMEORTC_0205/ctxtEORD-EBELN[6,0]").text = OA
+            Session.findById("wnd[0]/usr/tblSAPLMEORTC_0205/ctxtEORD-EBELP[7,0]").text = Item
+            Session.findById("wnd[0]/usr/tblSAPLMEORTC_0205/ctxtEORD-AUTET[10,0]").text = "1"
+            Session.findById("wnd[0]/usr/tblSAPLMEORTC_0205/ctxtEORD-AUTET[10,0]").setFocus()
+            Session.findById("wnd[0]/usr/tblSAPLMEORTC_0205/ctxtEORD-AUTET[10,0]").caretPosition = 1
+            Session.findById("wnd[0]/tbar[0]/btn[11]").press()
+            Session.findById("wnd[0]").sendVKey(0)
+            Session.findById("wnd[0]").sendVKey(0)
+            Session.findById("wnd[0]").sendVKey(0)
+
+            FixSourceListOA = True
+        Else
+            FixSourceListOA = False
+        End If
+    End Function
+
+    ''' <summary>
+    ''' Salva la información de ingresada en trigger
+    ''' </summary>
+    ''' <returns></returns>
+    ''' <remarks></remarks>
+    Public Function SaveTriggerData() As Boolean
+        Session.findById("wnd[0]/tbar[0]/btn[11]").press()
+    End Function
+End Class
