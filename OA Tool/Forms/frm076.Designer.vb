@@ -22,6 +22,7 @@ Partial Class frm076
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
+        Me.components = New System.ComponentModel.Container
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frm076))
         Dim DataGridViewCellStyle1 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle
         Dim DataGridViewCellStyle2 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle
@@ -42,10 +43,16 @@ Partial Class frm076
         Me.dgReport = New System.Windows.Forms.DataGridView
         Me.BGEKET = New System.ComponentModel.BackgroundWorker
         Me.BGEKKO = New System.ComponentModel.BackgroundWorker
+        Me.BGEKETN6P = New System.ComponentModel.BackgroundWorker
+        Me.BGOTDN6P = New System.ComponentModel.BackgroundWorker
+        Me.BGEKKON6P = New System.ComponentModel.BackgroundWorker
+        Me.BS = New System.Windows.Forms.BindingSource(Me.components)
+        Me.BW = New System.ComponentModel.BackgroundWorker
         Me.grpDateFromTo.SuspendLayout()
         Me.tlbHerremientas.SuspendLayout()
         Me.StatusStrip1.SuspendLayout()
         CType(Me.dgReport, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.BS, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'grpDateFromTo
@@ -178,7 +185,7 @@ Partial Class frm076
         DataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText
         DataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.[False]
         Me.dgReport.DefaultCellStyle = DataGridViewCellStyle2
-        Me.dgReport.Location = New System.Drawing.Point(12, 105)
+        Me.dgReport.Location = New System.Drawing.Point(6, 105)
         Me.dgReport.Name = "dgReport"
         Me.dgReport.ReadOnly = True
         DataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
@@ -189,7 +196,7 @@ Partial Class frm076
         DataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText
         DataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
         Me.dgReport.RowHeadersDefaultCellStyle = DataGridViewCellStyle3
-        Me.dgReport.Size = New System.Drawing.Size(862, 328)
+        Me.dgReport.Size = New System.Drawing.Size(875, 335)
         Me.dgReport.TabIndex = 7
         '
         'BGEKET
@@ -199,6 +206,21 @@ Partial Class frm076
         'BGEKKO
         '
         Me.BGEKKO.WorkerReportsProgress = True
+        '
+        'BGEKETN6P
+        '
+        Me.BGEKETN6P.WorkerReportsProgress = True
+        '
+        'BGOTDN6P
+        '
+        Me.BGOTDN6P.WorkerReportsProgress = True
+        '
+        'BGEKKON6P
+        '
+        Me.BGEKKON6P.WorkerReportsProgress = True
+        '
+        'BW
+        '
         '
         'frm076
         '
@@ -218,6 +240,7 @@ Partial Class frm076
         Me.StatusStrip1.ResumeLayout(False)
         Me.StatusStrip1.PerformLayout()
         CType(Me.dgReport, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.BS, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -238,4 +261,9 @@ Partial Class frm076
     Friend WithEvents dgReport As System.Windows.Forms.DataGridView
     Friend WithEvents BGEKET As System.ComponentModel.BackgroundWorker
     Friend WithEvents BGEKKO As System.ComponentModel.BackgroundWorker
+    Friend WithEvents BGEKETN6P As System.ComponentModel.BackgroundWorker
+    Friend WithEvents BGOTDN6P As System.ComponentModel.BackgroundWorker
+    Friend WithEvents BGEKKON6P As System.ComponentModel.BackgroundWorker
+    Friend WithEvents BS As System.Windows.Forms.BindingSource
+    Friend WithEvents BW As System.ComponentModel.BackgroundWorker
 End Class
