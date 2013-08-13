@@ -136,7 +136,6 @@ Public Class frm024
                     Else
                         Rep.ExcludePurchOrg(POrg.Rows(i).Item("Valor"))
                     End If
-
                 End If
             Next
         End If
@@ -162,11 +161,7 @@ Public Class frm024
 
         If Rep.Success Then
             If Rep.ErrMessage = Nothing Then
-
                 Requisiciones = Rep.Data
-
-                'Requisiciones.Columns.Add("User")
-                'Requisiciones.Columns.Add("SAPBox")
 
                 If Not cmdReeplazar.Checked Then
                     cn.ExecuteInServer("Delete From tmpOpenRequis Where [User] = '" & gsUsuarioPC & "'")
@@ -188,22 +183,14 @@ Public Class frm024
                 Requisiciones.Columns.Add(TN)
                 Requisiciones.Columns.Add(SB)
 
-                'Dim j As Integer
-                'For j = 0 To Requisiciones.Rows.Count - 1
-                '    Requisiciones.Rows(j).Item("User") = gsUsuarioPC
-                '    Requisiciones.Rows(j).Item("SAPBox") = Me.cboSAPBox.SelectedValue.ToString
-                'Next
-
                 cn.AppendTableToSqlServer("tmpOpenRequis", Requisiciones)
                 CargarInfo()
             Else
                 MsgBox(Rep.ErrMessage, MsgBoxStyle.Exclamation)
             End If
-
         Else
             MsgBox(Rep.ErrMessage, MsgBoxStyle.Exclamation)
         End If
-        'c = Nothing
 
         Me.tlbHerramientas.Enabled = True
     End Sub
@@ -322,15 +309,11 @@ Public Class frm024
                         End With
                     End If
                 Next
-
-
                 VerificarComentariosYRootCauses()
             End If
-
             Form.Close()
             '*************************************************************************************************
             '*************************************************************************************************
-
         End If
     End Sub
     Private Sub cmdDesbloquear_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdDesbloquear.Click
@@ -617,7 +600,7 @@ Public Class frm024
         ' '' ''                          "FROM tmpOpenRequis " & _
         ' '' ''                          "Where [User] = '" & gsUsuarioPC & "'"
 
-        Dim SQLRequis As String = "SELECT * FROM vstTmpOpenRequis Where [User] = '" & gsUsuarioPC & "'"
+        Dim SQLRequis As String = "SELECT * FROM vstTmpOpenRequis Where [User] = '" & gsUsuarioPC & "' Order by [Req Number], [Item Number]"
 
         '' '' ''************************************************************************************************
         '' '' ''************************************************************************************************
@@ -665,7 +648,7 @@ Public Class frm024
             ' '' ''                          "Where [User] = '" & gsUsuarioPC & "' And " & Filtro
 
 
-            Dim SQLRequis As String = "SELECT * FROM vstTmpOpenRequis Where [User] = '" & gsUsuarioPC & "' And (" & Filtro & ")"
+            Dim SQLRequis As String = "SELECT * FROM vstTmpOpenRequis Where [User] = '" & gsUsuarioPC & "' And (" & Filtro & ") Order by [Req Number], [Item Number]"
 
             '' '' ''************************************************************************************************
             '' '' ''************************************************************************************************

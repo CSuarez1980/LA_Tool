@@ -74,7 +74,7 @@
                 EKKO.Include_Document(PO)
                 EKET.Include_Document(PO)
 
-                If i = 100 Then
+                If i = 1000 Then
                     EKKO.SAPBox = "N6P"
                     _N6P.Include_Worker(EKKO)
                     EKKO = New EKKO_W
@@ -109,7 +109,7 @@
                 EKKO2.Include_Document(PO)
                 EKET2.Include_Document(PO)
 
-                If i = 100 Then
+                If i = 1000 Then
                     EKKO2.SAPBox = "L7P"
                     _L7P.Include_Worker(EKKO2)
                     EKKO2 = New EKKO_W
@@ -342,7 +342,7 @@ Public Class EKKO_W
                 Data = EKKO.Data
             End If
         Else
-            MsgBox("Fail to connect with RFC Class: BGEKKON6P")
+            MsgBox("Fail to connect with RFC Class: BGEKKO Box: " & _SAPBox & "Error message: " & EKKO.ErrMessage)
         End If
     End Sub
 #End Region
@@ -402,6 +402,8 @@ Public Class EKET_W
                 Data = TEKET
                 'cn.RunSentence("Delete From SC_EKET Where ([Delivery date] = '00000000') or ([Stat Del Date] = '00000000')")
             End If
+        Else
+            MsgBox("Unable to get SAP connection to EKET: " & _SAPBox & ". Message: " & R2.ErrMessage)
         End If
     End Sub
 #End Region

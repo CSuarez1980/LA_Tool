@@ -68,7 +68,6 @@ Public Class frm076
         lblStatus.Text = Message
     End Sub
 
-
 #Region "Latin America"
     Private Sub BGOTD_DoWork(ByVal sender As System.Object, ByVal e As System.ComponentModel.DoWorkEventArgs) Handles BGOTD.DoWork
         Dim r As New SAPCOM.EKBE_Report("L7P", gsUsuarioPC, AppId)
@@ -315,11 +314,9 @@ Public Class frm076
         Check()
         BS.ResetBindings(False)
     End Sub
-
     Private Sub ToolStripButton2_Click(ByVal sender As System.Object, ByVal e As System.EventArgs)
         BS.ResetBindings(False)
     End Sub
-
     Private Sub BW_DoWork(ByVal sender As System.Object, ByVal e As System.ComponentModel.DoWorkEventArgs) Handles BW.DoWork
         Dim F As New frm091
         F.StartDate = Me.dtpStartDate.Value.ToString
@@ -327,7 +324,6 @@ Public Class frm076
 
         F.ShowDialog()
     End Sub
-
     Private Sub BW_RunWorkerCompleted(ByVal sender As Object, ByVal e As System.ComponentModel.RunWorkerCompletedEventArgs) Handles BW.RunWorkerCompleted
         Dim cn As New OAConnection.Connection
         Data = cn.RunSentence("Select * From vst_SC_OTD Where TNumber = '" & gsUsuarioPC & "'").Tables(0)
