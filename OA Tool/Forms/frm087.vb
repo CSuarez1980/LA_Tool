@@ -163,7 +163,7 @@ Public Class frm087
             conn.Close()
             conn = Nothing
         Catch e As Exception
-            MsgBox("Error while querying database as follows: " & vbCrLf & e.Message, MsgBoxStyle.Exclamation)
+            MsgBox("Error while querying database as follows" & vbCrLf & e.Message, MsgBoxStyle.Exclamation)
         End Try
 
         Return rawDataTbl
