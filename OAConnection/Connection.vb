@@ -89,10 +89,11 @@ Public Class Connection
 
         'MyConfig = CType(reader.Deserialize(file), Server)
         'file.Close()
-        ' Return "Data Source=MXL1380Q1V; Initial Catalog=LA Tool;User ID=developer; Password=hmetal"
+        'Return "Data Source=MXL1380Q1V; Initial Catalog=LA Tool;User ID=developer; Password=hmetal"
 
-        'Return "Data Source=172.28.23.2,1528; Initial Catalog=LA Tool;User ID=oemsadmin; Password=@bhiram1"
-        Return "Data Source=172.18.27.12,1528; Initial Catalog=LA Tool;User ID=oemsadmin; Password=@bhiram1"
+        Return "Data Source=172.28.23.2,1528; Initial Catalog=LA Tool;User ID=oemsadmin; Password=@bhiram1"
+
+        'Return "Data Source=172.18.27.12,1528; Initial Catalog=LA Tool;User ID=oemsadmin; Password=@bhiram1"
 
         'Return "Data Source=IBLCRPGSQLLA\SQLExpress; Initial Catalog=LA Tool; User ID=Developer; Password=hmetal; Connect Timeout=0;"
         'Return "Data Source=cnu8374800; Initial Catalog=OATool;User ID=guest; Password=guest"
